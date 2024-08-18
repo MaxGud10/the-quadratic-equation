@@ -2,31 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-void findRoots(int a, int b, int c) 
-{
-   if (a == 0) 
-   {
-        printf("invalid");
-        return;
-   }
-        int d = b*b - 4*a*c;
-        double sqrt_d = sqrt(d);
 
-   if (d > 0)
-   {
-        printf("%f\n%f", (double)(-b+sqrt_d)/(2*a), (double)(-b-sqrt_d)/(2*a));
-   }
-    else if (d == 0)
-    {
-        printf("%f", -(double)b/(2*a));
-    }
-    else // d < 0
-    {
-        printf("%f+i%f\n%f-i%f", -(double)b/(2*a), sqrt_d/(2*a), -(double)b/(2*a), sqrt_d/(2*a));
 
-    }
-}
-
+void findRoots(double a, double b, double c);
 int main()
 {
     double a, b,c;
@@ -35,4 +13,30 @@ int main()
     scanf("%lf", &c);
     findRoots(a, b, c); 
     return 0; 
+} 
+void findRoots(double a, double b, double c)
+{
+   if (a == 0) 
+   {
+        printf("invalid\n");
+        return;
+   }
+    double d = b * b - 4 * a * c;
+
+   if (d > 0)
+   {
+        double sqrt_d = sqrt(d);
+        printf("%f\n%f", (double)(-b+sqrt_d)/(2*a), (double)(-b-sqrt_d)/(2*a));
+   }
+    else if (d == 0)
+    {
+        printf("%f", -(double)b/(2*a));
+    }
+    else // d < 0
+    {
+        double sqrt_d_minus = sqrt(-d);
+        printf("%f+i%f\n%f-i%f", -(double)b/(2*a), sqrt_d_minus/(2*a), -(double)b/(2*a), sqrt_d_minus/(2*a));
+
+    }
 }
+

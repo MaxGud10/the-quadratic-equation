@@ -2,60 +2,125 @@
 #include <stdlib.h>
 #include <math.h>
 
-const double x_max = 1e-6;
+#define SS_INF_ROOTS 3  // Определяем константу для бесконечного числа корней
+const double x_min = 1e-6;
 
-int compare_doubles(double x, double y);
+enum nRoots { no_root, one_root, two_root, INF_ROOT }; 
 
+enum nRoots solve_square(double a, double b, double c, double *x1, double *x2);
+int compare_doubles(double x1, double x2);
+int all_test(double a, double b, double c, double x1_expect, double x2_expect, enum nRoots number_roots_expected);
 
-void findRoots(double a, double b, double c);
-
-int main()
+int main(void)
 {
-    double a = 0, b = 0, c = 0;
-    scanf("%lf", &a);
-    scanf("%lf", &b);
-    scanf("%lf", &c);
-    findRoots(a, b, c); 
-    return 0; 
-} 
+    printf("Square equation solver\n");
+    printf("Enter a, b, c:\n");
 
-int compare_doubles(double x, double y) 
+    double a = NAN, b = NAN, c = NAN;
+    if(scanf("%lf%lf%lf", &a, &b, &c) != 3)
+    { 
+        printf("Error\n");
+        return 1;
+    }
+
+    double x1 = NAN, x2 = NAN;
+    enum nRoots findRoots = solve_square(a, b, c, &x1, &x2);
+
+    switch(findRoots)
+    {
+        case no_root: 
+            printf("No roots\n");
+            break;
+
+        case one_root: 
+            printf("x = %lf\n", x1);
+            break;
+
+        case two_root: 
+            printf("x1 = %lf and x2 = %lf\n", x1, x2);
+            break;
+
+        case INF_ROOT: 
+            printf("Any number\n");
+            break;
+
+        default: 
+            printf("main(): ERROR: findRoots = %d\n", findRoots);
+            return 1;
+    }
+
+    // тесты
+    all_test(1, -3, 2, 2, 1, two_root);  // (x - 2)(x - 1) = 0 --> корни 1, 2
+    all_test(1, -5, 6, 3, 2, two_root);   // (x - 3)(x - 2) = 0 -> корни 2, 3
+    all_test(1, 2, 1, -1, -1, one_root);  // (x + 1)^2 = 0 -> корень -1
+    all_test(1, 0, -1, -1, 1, two_root);  // (x - 1)(x + 1) = 0 -> корни -1, 1
+    all_test(1, 0, 0, 0, 0, one_root);    // x = 0 -> корень 0
+    all_test(1, 4, 4, -2, -2, one_root);   // (x + 2)^2 = 0 -> корень -2
+    all_test(0, 2, -4, 2, 2, one_root);    // 2x = 4 -> корень 2
+
+    return 0;
+}
+
+int compare_doubles(double x1, double x2) 
 {
-    if (fabs(x - y) < x_max) {
+    if (fabs(x1 - x2) < x_min) {
         return 0;  
     }
-    return (x < y) ? -1 : 1; 
+    return (x1 < x2) ? -1 : 1; 
 }
 
-void findRoots(const double a, const double b, const double c)
+enum nRoots solve_square(double a, double b, double c, double *x1, double *x2)
 {
-   if (compare_doubles(a, 0) == 0)
-   {
-        printf("A linear equation is a special case of a quadratic equation\n");
-        return;
-   }
-    double discriminant = b * b - 4 * a * c;
-
-   if (discriminant > 0)
-   {
-        double sqrt_discriminant = sqrt(discriminant);
-
-        printf("%f\n%f", (-b+sqrt_discriminant)/(2*a), 
-        (-b-sqrt_discriminant)/(2*a));
-   }
-
-    else if (compare_doubles(discriminant, 0) == 0) 
+    if (compare_doubles(a, 0) == 0)
     {
-        printf("%f\n", -(b) / (2 * a));
-    } 
-
-    else // discriminant < 0
+        if (compare_doubles(b, 0) == 0)
+        {
+            return (compare_doubles(c, 0) == 0) ? INF_ROOT : no_root;
+        }
+        else 
+        {
+            *x1 = -c / b;
+            return one_root;
+        }
+    }
+    else 
     {
-        double sqrt_discriminant_minus = sqrt(-discriminant);
-        double actual_part = -b / (2 * a);
-        double imaginary_part = sqrt_discriminant_minus / (2 * a);
-        printf("%f+i%f\n%f-i%f\n", actual_part, imaginary_part, actual_part, imaginary_part);
+        double discriminant = b * b - 4 * a * c;
 
+        if (compare_doubles(discriminant, 0) == 0)
+        {
+            *x1 = *x2 = -b / (2 * a);
+            return one_root;
+        }
+        else if (discriminant > 0)
+        {
+            double sqrt_discriminant = sqrt(discriminant);
+            *x1 = (-b - sqrt_discriminant) / (2 * a);
+            *x2 = (-b + sqrt_discriminant) / (2 * a);
+            return two_root;
+        }
+        else
+        {
+            return no_root; // Нет действительных корней
+        }
     }
 }
 
+int all_test(double a, double b, double c, double x1_expect, double x2_expect, enum nRoots number_roots_expected)
+{
+    double x1 = 0, x2 = 0;
+    enum nRoots number_roots = solve_square(a, b, c, &x1, &x2);
+    
+
+    if (compare_doubles(number_roots, number_roots_expected) != 0 || 
+        compare_doubles(x1, x1_expect) != 0 || 
+        compare_doubles(x2, x2_expect) != 0)
+    {
+        printf("ErrorTest: a = %lf, b = %lf, c = %lf, number_roots = %d: x1 = %lf, x2 = %lf "
+               "Expected number_roots = %d: x1 = %lf, x2 = %lf\n", 
+               a, b, c, number_roots, x1, x2, number_roots_expected, x1_expect, x2_expect);
+        return 1; 
+    }
+
+    return 0; // Возвращаем 0 при успешном тестировании
+}

@@ -34,7 +34,7 @@ enum nRoots solve_square(double a, double b, double c, double *x1, double *x2);
 int compare_doubles(double x1, double x2);
 int unit_test(struct str_test data, int test_number);
 int clean_bufer();
-int offer_test(char word[CHAR_CONST]);
+int offer_test(char word[CHAR_CONST], const struct str_test data [10]);
 int key_word(int arg_c, const char *arg_v[], const struct str_test data[9], double a, double b, double c);
 int check_input(double a, double  b, double c);
 
@@ -42,19 +42,7 @@ int proverka(const struct str_test data [9]);
 //int candle()
 
 
-//const struct str_test data1 = {1, -3, 2, 1, 2, TWO_ROOT};
 
-
-
-/*const struct str_test data2 = {1, -5, 6, 3, 2, TWO_ROOT};
-const struct str_test data3= {1, 2, 1, -1, -1, ONE_ROOT};
-const struct str_test data4 = {1, 0, -9, -3, 3, TWO_ROOT};
-const struct str_test data5 = {1, 0, 0, 0, 0, ONE_ROOT};
-const struct str_test data6 = {1, 4, 4, -2, -2, ONE_ROOT};
-const struct str_test data7 = {0, 2, -4, 2, 2, ONE_ROOT};
-const struct str_test data8 = {2, 4, 2, -1, -1, ONE_ROOT}; 
-const struct str_test data9 = {1, 0, -1, -1, 1, TWO_ROOT};
-const struct str_test data10 = {1, -6, 9, 3, 3, ONE_ROOT};*/
 
 int main(int arg_c, const char *arg_v[])
 {
@@ -120,7 +108,7 @@ int main(int arg_c, const char *arg_v[])
 
     printf("Do you want to do another test? (Yes or No): ");
     char word[CHAR_CONST];
-    offer_test(word);
+    offer_test(word, data);
     
 }
 
@@ -134,7 +122,7 @@ int provekka(const struct str_test data [9])
     return 0;
 }
 
-int offer_test( char word[CHAR_CONST], struct str_test data [10])
+int offer_test( char word[CHAR_CONST], const struct str_test data [10])
 {   
     
     scanf("%s", word);
@@ -177,35 +165,13 @@ int key_word(int arg_c, const char *arg_v[], const struct str_test data [9], dou
     }
     if (arg_c > 1 && strcasecmp(arg_v[1], KEY_WORD2) == 0)
     {
-       provekka(data);
-        
-        /*unit_test(data, 1);
-        unit_test(data, 2);
-        unit_test(data, 3);
-        unit_test(data, 4);
-        unit_test(data, 5);
-        unit_test(data, 6);
-        unit_test(data, 7);
-        unit_test(data, 8);
-        unit_test(data, 9);
-        unit_test(data, 10);*/
+        provekka(data);
         return 0;   
     }
 
     if (arg_c > 1 && strcasecmp(arg_v[1], KEY_WORD3) == 0)
     {
         provekka(data);
-        
-        /*unit_test(data, 1);
-        unit_test(data, 2);
-        unit_test(data, 3);
-        unit_test(data, 4);
-        unit_test(data, 5);
-        unit_test(data, 6);
-        unit_test(data, 7);
-        unit_test(data, 8);
-        unit_test(data, 9);
-        unit_test(data, 10);*/
         return 0; 
     }
     else if (strcasecmp(arg_v[1], "No") == 0 ) 

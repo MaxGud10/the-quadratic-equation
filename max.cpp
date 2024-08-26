@@ -1,7 +1,4 @@
-//! @file файл для ------------------
-
-
-
+//! @file 
 
 
 #include <stdio.h>
@@ -36,7 +33,7 @@ enum Mode
 enum NRoots 
 { 
     NO_ROOT   = 0, 
-    ONE_ROOT  = 1, // TODO: подравнять
+    ONE_ROOT  = 1, 
     TWO_ROOT  = 2,
     INF_ROOTS = 3
 }; //NO_ROOTs, ONE_ROOTs, TWO_ROOTs --> именнованная константа, представляющей целочисленное значение 0, 1, 2 соотвественно 
@@ -64,7 +61,7 @@ int main(int arg_c, const char *arg_v[])
 {  
     printf("arg_c = %d, arg_v[0] = %s, arg_v[1] = %s\n", arg_c, arg_v[0], arg_v[1]);
     
-    double a = NAN, b = NAN, c = NAN;
+    double a  = NAN, b  = NAN, c = NAN;
     double x1 = NAN, x2 = NAN; 
 
     const struct StrTest data[DATA_NUMBER] = // TODO: где константа?
@@ -89,21 +86,22 @@ int main(int arg_c, const char *arg_v[])
             return 0;
 
         case HELP_MODE:
-            printf(RED "Hello. This program solves the quadratic equation\n"
-                        "if you enter it .\\do --test or .\\do -t or .\\do test, then"
-                        "the tests with the already set parameters will be displayed"
-                        "if you enter it simply .\\do, then enter the coefficients a and b and c"
-                        "if you write -d or -D, you can enter your parameters a, b, c and then you "
-                        "will be offered unit tests\n" WHITE);
+            printf(DRAW_TEXT(RED,"Hello. This program solves the quadratic equation\n"
+                                 "if you enter it .\\do --test or .\\do -t or .\\do test, then"
+                                 "the tests with the already set parameters will be displayed"
+                                 "if you enter it simply .\\do, then enter the coefficients a and b and c"
+                                 "if you write -d or -D, you can enter your parameters a, b, c and then you "
+                                 "will be offered unit tests\n"));
             return 0;
         
         case SOLVE_MODE:
             general_solution(a, b, c, &x1, &x2, data);
             break;
+
         case NONE: 
-            printf(CYAN "Write the word ./do help and you will get a hint on how to use the program\n" WHITE); 
-            printf ("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+            printf(DRAW_TEXT(CYAN,"Write the word ./do help and you will get a hint on how to use the program\n" WHITE)); 
             return 0;
+
         default:
             printf("ERROR\n"); // TODO: прочитай в интернете про цветной вывод. Сделай библиотеку (.h файл), где через define цвета
             return 1;
@@ -137,10 +135,10 @@ int offer_test(char *word, const struct StrTest data [DATA_NUMBER])
     else if (strcmp (word, "No") == 0 || 
              strcmp (word, "no") == 0) 
     {
-        printf(RED "Exiting the program.\n" WHITE);
+        printf(DRAW_TEXT(RED,"Exiting the program.\n"));
         return 0;
     }
-    else printf("Invalid input, exiting.\n" WHITE);
+    else printf(DRAW_TEXT(RED,"Invalid input, exiting.\n"));
     return 0;
 }
 
@@ -165,7 +163,7 @@ enum Mode process_arguments(int arg_c, const char *arg_v[])
     }
     else 
     {
-        printf(RED "ERROR: process_arguments %s is wrong\n" WHITE, FIND_ROOT1);
+        printf(DRAW_TEXT(RED,"ERROR: process_arguments %s is wrong\n"), FIND_ROOT1);
     } 
     return NONE;
 }
@@ -173,13 +171,12 @@ enum Mode process_arguments(int arg_c, const char *arg_v[])
 int general_solution(double a, double b, double c, double *x1, double *x2,const StrTest data [DATA_NUMBER])
 {
     check_input(&a, &b, &c);
-
-    //double x1 = NAN, x2 = NAN; 
+ 
     enum NRoots findRoots = solve_square(a, b, c, x1, x2); 
 
     root_printing(findRoots, x1, x2);
 
-    printf(GREEN "Do you want to do another test? (Yes or No): " WHITE);
+    printf(DRAW_TEXT(GREEN,"Do you want to do another test? (Yes or No): "));
     char word[ARRAY_LENGTH];
     offer_test(word, data);
     return 0;
@@ -190,7 +187,7 @@ int root_printing(int findRoots, double* x1, double* x2)
     switch(findRoots) 
     {
         case NO_ROOT: 
-            printf(YELLOW "No roots\n" WHITE);
+            printf(DRAW_TEXT(YELLOW,"No roots\n"));
             break;
 
         case ONE_ROOT: 
@@ -207,11 +204,11 @@ int root_printing(int findRoots, double* x1, double* x2)
             break;
 
         case INF_ROOTS: 
-            printf(RED "Any number\n");
+            printf(DRAW_TEXT(RED,"Any number\n"));
             break;
 
         default: 
-            printf(RED "main(): ERROR: findRoots = %d\n" WHITE, findRoots);
+            printf(DRAW_TEXT(RED,"main(): ERROR: findRoots = %d\n"), findRoots);
             return 1;
     }
     return 0;
@@ -224,7 +221,7 @@ int check_input(double *a, double *b, double *c)
     { // TODO: коды для цветов для них дефайн в отдельный .h файл #define RED "jgf" printf (RED "" RESET);
 
 
-        printf(GREEN "Enter coefficients a, b, c:\n" WHITE);
+        printf(DRAW_TEXT(GREEN,"Enter coefficients a, b, c:\n"));
 
         int result = scanf("%lf %lf %lf", a, b, c);
         
@@ -234,7 +231,7 @@ int check_input(double *a, double *b, double *c)
         } 
         else 
         {
-            printf(CYAN "Invalid input, please enter numeric values.\n" WHITE);
+            printf(DRAW_TEXT(CYAN,"Invalid input, please enter numeric values.\n"));
             clean_bufer();
         }
     }
@@ -273,6 +270,7 @@ enum NRoots solve_square(double a, double b, double c, double *x1, double *x2)
     assert(x1 != NULL);
     assert(x2 != NULL);
     assert(x1 != x2);
+
     if (compare_doubles(a, 0) == 0)
     {   
         linear_equation(b, c, x1);
@@ -303,15 +301,15 @@ enum NRoots solve_square(double a, double b, double c, double *x1, double *x2)
 
 int linear_equation(double b, double c, double *x1)
 {
-     if (compare_doubles(b, 0) == 0)
-        {
-            return (compare_doubles(c, 0) == 0) ? INF_ROOTS : NO_ROOT; 
-        }
-        else 
-        {
-            *x1 = -c / b;
-            return ONE_ROOT;
-        }
+    if (compare_doubles(b, 0) == 0)
+    {
+        return (compare_doubles(c, 0) == 0) ? INF_ROOTS : NO_ROOT; 
+    }
+    else 
+    {
+        *x1 = -c / b;
+        return ONE_ROOT;
+    }
     return 0;
 }
 
@@ -328,7 +326,7 @@ int unit_test(struct StrTest data, int test_number)
             if (compare_doubles(x1, data.x2_expect) == 0 ||
                 compare_doubles(x2, data.x1_expect) == 0) // проверка на совпадающие корни 
             { // TODO: кодстайд
-            printf(YELLOW "All right\n" WHITE);
+            printf(DRAW_TEXT(YELLOW,"All right\n"));
             }
             else
             {

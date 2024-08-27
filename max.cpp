@@ -218,7 +218,7 @@ int root_printing(int findRoots, double* x1, double* x2)
 int check_input(double *a, double *b, double *c)
 {   
     while (1) 
-    { // TODO: коды для цветов для них дефайн в отдельный .h файл #define RED "jgf" printf (RED "" RESET);
+    { 
 
 
         printf(DRAW_TEXT(GREEN,"Enter coefficients a, b, c:\n"));
